@@ -3,8 +3,11 @@ package com.markp.service;
 import com.markp.dto.EmployeeDto;
 import com.markp.exception.ResourceNotFoundException;
 import com.markp.mapper.EmployeeMapper;
+import com.markp.mapper.RoleMapper;
 import com.markp.model.Employee;
+import com.markp.model.Role;
 import com.markp.repository.EmployeeRepository;
+import com.markp.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+    private RoleRepository roleRepository;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -52,6 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
         employee.setEmail(updatedEmployee.getEmail());
+        employee.setAge(updatedEmployee.getAge());
+        employee.setAddress(updatedEmployee.getAddress());
+        employee.setContactNumber(updatedEmployee.getContactNumber());
+        employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
+        employee.setRole(RoleMapper.mapToRole(updatedEmployee.getRole()));
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 
@@ -66,5 +75,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                         new ResourceNotFoundException("Employee does not exist with given id: " + employeeId));
 
         employeeRepository.deleteById(employeeId);
+    }
+
+    @Override
+    public EmployeeDto assignRoleToEmployee(Long employeeId, Long roleId) {
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee does not exist with given id: " + employeeId));
+
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Role does not exist with given id: " + roleId));
+
+        employee.setRole(role);
+        Employee updatedEmployee = employeeRepository.save(employee);
+        return EmployeeMapper.mapToEmployeeDto(updatedEmployee);
     }
 }

@@ -14,7 +14,8 @@ public class EmployeeMapper {
                 employee.getAge(),
                 employee.getAddress(),
                 employee.getContactNumber(),
-                employee.getEmploymentStatus()
+                employee.getEmploymentStatus(),
+                RoleMapper.mapToRoleDto(employee.getRole())
         );
     }
 
@@ -27,7 +28,8 @@ public class EmployeeMapper {
                 employeeDto.getAge(),
                 employeeDto.getAddress(),
                 employeeDto.getContactNumber(),
-                employeeDto.getEmploymentStatus()
+                employeeDto.getEmploymentStatus(),
+                RoleMapper.mapToRole(employeeDto.getRole())
         );
     }
 }

@@ -53,4 +53,11 @@ public class EmployeeController {
         employeeService.deleteEmployee(employeeId);
         return ResponseEntity.ok("Employee deleted successfully.");
     }
+
+    @PutMapping("{employeeId}/assign-role/{roleId}")
+    public ResponseEntity<EmployeeDto> assignRoleToEmployee(@PathVariable("employeeId") Long employeeId,
+                                                            @PathVariable("roleId") Long roleId) {
+        EmployeeDto employeeDto = employeeService.assignRoleToEmployee(employeeId, roleId);
+        return ResponseEntity.ok(employeeDto);
+    }
 }

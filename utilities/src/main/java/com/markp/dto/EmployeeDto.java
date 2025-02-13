@@ -18,4 +18,5 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private String employmentStatus;
+    private RoleDto role;
 }
