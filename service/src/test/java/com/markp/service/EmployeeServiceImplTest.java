@@ -1,8 +1,10 @@
 package com.markp.service;
 
 import com.markp.dto.EmployeeDto;
+import com.markp.dto.RoleDto;
 import com.markp.exception.ResourceNotFoundException;
 import com.markp.model.Employee;
+import com.markp.model.Role;
 import com.markp.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
