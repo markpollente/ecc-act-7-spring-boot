@@ -5,10 +5,14 @@ import com.markp.exception.ResourceNotFoundException;
 import com.markp.mapper.RoleMapper;
 import com.markp.model.Role;
 import com.markp.repository.RoleRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;
@@ -30,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleDto> getAllByRole() {
+    public List<RoleDto> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         return roles.stream().map(RoleMapper::mapToRoleDto)
                 .collect(Collectors.toList());

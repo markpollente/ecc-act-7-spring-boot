@@ -10,7 +10,7 @@ public interface RoleService {
 
     RoleDto getRoleByID(Long roleId);
 
-    List<RoleDto> getAllByRole();
+    List<RoleDto> getAllRoles();
 
     RoleDto updateRole(Long roleId, RoleDto updatedRole);
 
