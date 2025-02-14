@@ -37,7 +37,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeDto);
     }
 
-    // list an employee record
+    // list of employee records
     @GetMapping
     public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
         List<EmployeeDto> employees = employeeService.getAllEmployees();
