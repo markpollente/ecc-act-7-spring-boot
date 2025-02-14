@@ -31,7 +31,7 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email_id", nullable = false, unique = true)
+    @Column(name = "email_id", unique = true)
     private String email;
 
     @Column(name = "age")

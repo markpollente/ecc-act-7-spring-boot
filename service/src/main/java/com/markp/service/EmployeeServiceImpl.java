@@ -5,8 +5,10 @@ import com.markp.exception.ResourceNotFoundException;
 import com.markp.mapper.EmployeeMapper;
 import com.markp.mapper.RoleMapper;
 import com.markp.model.Employee;
+import com.markp.model.HelpdeskTicket;
 import com.markp.model.Role;
 import com.markp.repository.EmployeeRepository;
+import com.markp.repository.HelpdeskTicketRepository;
 import com.markp.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
     private RoleRepository roleRepository;
+    private HelpdeskTicketRepository helpdeskTicketRepository;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -71,6 +74,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Long employeeId) {
+        List<HelpdeskTicket> tickets = helpdeskTicketRepository.findByAssigneeId(employeeId);
+
+        for (HelpdeskTicket ticket : tickets) {
+            ticket.setAssignee(null);
+            helpdeskTicketRepository.save(ticket);
+        }
 
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
