@@ -60,7 +60,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setAddress(updatedEmployee.getAddress());
         employee.setContactNumber(updatedEmployee.getContactNumber());
         employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
-        employee.setRole(RoleMapper.mapToRole(updatedEmployee.getRole()));
+        if (updatedEmployee.getRole() != null) {
+            employee.setRole(RoleMapper.mapToRole(updatedEmployee.getRole()));
+        }
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 

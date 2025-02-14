@@ -15,7 +15,7 @@ public class EmployeeMapper {
                 employee.getAddress(),
                 employee.getContactNumber(),
                 employee.getEmploymentStatus(),
-                RoleMapper.mapToRoleDto(employee.getRole())
+                employee.getRole() != null ? RoleMapper.mapToRoleDto(employee.getRole()) : null
         );
     }
 
@@ -29,7 +29,7 @@ public class EmployeeMapper {
                 employeeDto.getAddress(),
                 employeeDto.getContactNumber(),
                 employeeDto.getEmploymentStatus(),
-                RoleMapper.mapToRole(employeeDto.getRole())
+                employeeDto.getRole() != null ? RoleMapper.mapToRole(employeeDto.getRole()) : null
         );
     }
 }

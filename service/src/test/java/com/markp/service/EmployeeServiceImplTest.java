@@ -30,12 +30,14 @@ public class EmployeeServiceImplTest {
 
     private Employee employee;
     private EmployeeDto employeeDto;
+    private Role role;
+    private RoleDto roleDto;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active");
-        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active");
+        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active", role);
+        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active", roleDto);
     }
 
     @Test

@@ -27,9 +27,6 @@
 		<module>utilities</module>
 		<module>model</module>
 		<module>repository</module>
-        <module>repository</module>
-		<module>model</module>
-		<module>utilities</module>
 	</modules>
     <scm>
 		<connection/>
