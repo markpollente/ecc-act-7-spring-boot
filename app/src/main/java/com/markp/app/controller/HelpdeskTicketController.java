@@ -42,6 +42,12 @@ public class HelpdeskTicketController {
         return ResponseEntity.ok(tickets);
     }
 
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<HelpdeskTicketDto>> getTicketsByStatus(@PathVariable("status") String status) {
+        List<HelpdeskTicketDto> tickets = ticketService.getTicketsByStatus(status);
+        return ResponseEntity.ok(tickets);
+    }
+
     @GetMapping("/assignee/{assigneeId}")
     public ResponseEntity<List<HelpdeskTicketDto>> getTicketsByAssignee(@PathVariable("assigneeId") Long assigneeId) {
         List<HelpdeskTicketDto> tickets = ticketService.getTicketsByAssignee(assigneeId);

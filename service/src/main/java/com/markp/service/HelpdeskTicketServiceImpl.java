@@ -26,6 +26,8 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     public HelpdeskTicketDto createTicket(HelpdeskTicketDto ticketDto) {
         HelpdeskTicket ticket = HelpdeskTicketMapper.mapToHelpdeskTicket(ticketDto);
         ticket.setCreatedDate(LocalDateTime.now());
+        ticket.setCreatedBy("system");
+        ticket.setStatus("draft");
         ticket.setTicketNo(generateTicketNo());
         HelpdeskTicket savedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(savedTicket);
@@ -48,6 +50,13 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    public List<HelpdeskTicketDto> getTicketsByStatus(String status) {
+        List<HelpdeskTicket> tickets = ticketRepository.findByStatus(status);
+        return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<HelpdeskTicketDto> getTicketsByAssignee(Long assigneeId) {
         List<HelpdeskTicket> tickets = ticketRepository.findByAssigneeId(assigneeId);
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
@@ -64,7 +73,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
         ticket.setBody(updatedTicket.getBody());
         ticket.setStatus(updatedTicket.getStatus());
         ticket.setUpdatedDate(LocalDateTime.now());
-        ticket.setUpdatedBy(updatedTicket.getUpdatedBy());
+        ticket.setUpdatedBy("system");
         ticket.setRemarks(updatedTicket.getRemarks());
 
         HelpdeskTicket updatedTicketObj = ticketRepository.save(ticket);
@@ -89,6 +98,9 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exist with given id: " + employeeId));
         ticket.setAssignee(employee);
+        ticket.setStatus("filed");
+        ticket.setUpdatedDate(LocalDateTime.now());
+        ticket.setUpdatedBy("system");
         HelpdeskTicket updatedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicket);
     }
@@ -101,6 +113,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
         ticket.setRemarks(remarks);
         ticket.setStatus(status);
         ticket.setUpdatedDate(LocalDateTime.now());
+        ticket.setUpdatedBy("system");
         HelpdeskTicket updatedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicket);
     }

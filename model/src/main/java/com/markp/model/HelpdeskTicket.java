@@ -27,26 +27,26 @@ public class HelpdeskTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ticket_no", nullable = false, unique = true)
+    @Column(name = "ticket_no", unique = true)
     private String ticketNo;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "body", nullable = false)
+    @Column(name = "body")
     private String body;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")
     private Employee assignee;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private String status;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "updated_date")

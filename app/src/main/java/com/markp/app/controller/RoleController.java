@@ -23,31 +23,36 @@ public class RoleController {
 
     private RoleService roleService;
 
+    // create a role record
     @PostMapping
     public ResponseEntity<RoleDto> createRole(@RequestBody RoleDto roleDto) {
         RoleDto savedRole = roleService.createRole(roleDto);
         return new ResponseEntity<>(savedRole, HttpStatus.CREATED);
     }
 
+    // view a role record
     @GetMapping("{id}")
     public ResponseEntity<RoleDto> getRoleById(@PathVariable("id") Long roleId) {
         RoleDto roleDto = roleService.getRoleByID(roleId);
         return ResponseEntity.ok(roleDto);
     }
 
+    // list a role record
     @GetMapping
     public ResponseEntity<List<RoleDto>> getAllRoles() {
         List<RoleDto> roles = roleService.getAllRoles();
         return ResponseEntity.ok(roles);
     }
 
+    // update a role record
     @PutMapping("{id}")
-    public ResponseEntity<RoleDto> updatedRole(@PathVariable("id") Long roleId,
-                                               @RequestBody RoleDto updatedRole) {
+    public ResponseEntity<RoleDto> updateRole(@PathVariable("id") Long roleId,
+                                              @RequestBody RoleDto updatedRole) {
         RoleDto roleDto = roleService.updateRole(roleId, updatedRole);
         return ResponseEntity.ok(roleDto);
     }
 
+    // delete a role record
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteRole(@PathVariable("id") Long roleId) {
         roleService.deleteRole(roleId);

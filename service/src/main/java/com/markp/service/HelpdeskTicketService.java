@@ -11,6 +11,8 @@ public interface HelpdeskTicketService {
 
     List<HelpdeskTicketDto> getAllTickets();
 
+    List<HelpdeskTicketDto> getTicketsByStatus(String status);
+
     List<HelpdeskTicketDto> getTicketsByAssignee(Long assigneeId);
 
     HelpdeskTicketDto updateTicket(Long ticketId, HelpdeskTicketDto updatedTicket);

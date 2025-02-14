@@ -29,10 +29,10 @@ public class HelpdeskTicketMapper {
                 ticketDto.getBody(),
                 EmployeeMapper.mapToEmployee(ticketDto.getAssignee()),
                 ticketDto.getStatus(),
-                ticketDto.getCreatedDate(),
-                ticketDto.getCreatedBy(),
-                ticketDto.getUpdatedDate(),
-                ticketDto.getUpdatedBy(),
+                null,
+                null,
+                null,
+                null,
                 ticketDto.getRemarks()
         );
     }
