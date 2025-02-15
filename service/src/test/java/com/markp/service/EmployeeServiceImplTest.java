@@ -3,15 +3,21 @@ package com.markp.service;
 import com.markp.dto.EmployeeDto;
 import com.markp.dto.RoleDto;
 import com.markp.exception.ResourceNotFoundException;
+import com.markp.mapper.EmployeeMapper;
+import com.markp.mapper.RoleMapper;
 import com.markp.model.Employee;
+import com.markp.model.HelpdeskTicket;
 import com.markp.model.Role;
 import com.markp.repository.EmployeeRepository;
+import com.markp.repository.HelpdeskTicketRepository;
+import com.markp.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +31,12 @@ public class EmployeeServiceImplTest {
     @Mock
     private EmployeeRepository employeeRepository;
 
+    @Mock
+    private RoleRepository roleRepository;
+
+    @Mock
+    private HelpdeskTicketRepository helpdeskTicketRepository;
+
     @InjectMocks
     private EmployeeServiceImpl employeeService;
 
@@ -36,8 +48,10 @@ public class EmployeeServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active", role);
-        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 1L, "Blk 123 Rob Homes, Antipolo", "09123456780", "Active", roleDto);
+        role = new Role(1L, "Admin", "Administrator role");
+        roleDto = new RoleDto(1L, "Admin", "Administrator role");
+        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 30L, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(role)));
+        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 30L, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(roleDto)));
     }
 
     @Test
@@ -89,12 +103,29 @@ public class EmployeeServiceImplTest {
     @Test
     void deleteEmployee() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+        when(helpdeskTicketRepository.findByAssigneeId(1L)).thenReturn(Arrays.asList(new HelpdeskTicket()));
         doNothing().when(employeeRepository).deleteById(1L);
 
         employeeService.deleteEmployee(1L);
 
         verify(employeeRepository, times(1)).findById(1L);
+        verify(helpdeskTicketRepository, times(1)).findByAssigneeId(1L);
         verify(employeeRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void assignRoleToEmployee() {
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+        when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
+        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(1L, 1L);
+
+        assertNotNull(updatedEmployee);
+        assertTrue(updatedEmployee.getRoles().stream().anyMatch(r -> r.getName().equals(roleDto.getName())));
+        verify(employeeRepository, times(1)).findById(1L);
+        verify(roleRepository, times(1)).findById(1L);
+        verify(employeeRepository, times(1)).save(any(Employee.class));
     }
 
     @Test
