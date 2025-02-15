@@ -3,6 +3,8 @@ package com.markp.mapper;
 import com.markp.dto.EmployeeDto;
 import com.markp.model.Employee;
 
+import java.util.stream.Collectors;
+
 public class EmployeeMapper {
 
     public static EmployeeDto mapToEmployeeDto(Employee employee) {
@@ -18,7 +20,9 @@ public class EmployeeMapper {
                 employee.getAddress(),
                 employee.getContactNumber(),
                 employee.getEmploymentStatus(),
-                employee.getRole() != null ? RoleMapper.mapToRoleDto(employee.getRole()) : null
+                employee.getRoles() != null ? employee.getRoles().stream()
+                        .map(RoleMapper::mapToRoleDto)
+                        .collect(Collectors.toList()) : null
         );
     }
 
@@ -35,7 +39,9 @@ public class EmployeeMapper {
                 employeeDto.getAddress(),
                 employeeDto.getContactNumber(),
                 employeeDto.getEmploymentStatus(),
-                employeeDto.getRole() != null ? RoleMapper.mapToRole(employeeDto.getRole()) : null
+                employeeDto.getRoles() != null ? employeeDto.getRoles().stream()
+                        .map(RoleMapper::mapToRole)
+                        .collect(Collectors.toList()) : null
         );
     }
 }

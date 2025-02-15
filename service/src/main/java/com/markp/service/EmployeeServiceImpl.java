@@ -63,8 +63,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setAddress(updatedEmployee.getAddress());
         employee.setContactNumber(updatedEmployee.getContactNumber());
         employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
-        if (updatedEmployee.getRole() != null) {
-            employee.setRole(RoleMapper.mapToRole(updatedEmployee.getRole()));
+        if (updatedEmployee.getRoles() != null) {
+            employee.setRoles(updatedEmployee.getRoles().stream()
+                    .map(RoleMapper::mapToRole)
+                    .collect(Collectors.toList()));
         }
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
@@ -99,7 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Role does not exist with given id: " + roleId));
 
-        employee.setRole(role);
+        employee.getRoles().add(role);
         Employee updatedEmployee = employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(updatedEmployee);
     }

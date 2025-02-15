@@ -1,9 +1,12 @@
 package com.markp.dto;
 
+import com.markp.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +21,5 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private String employmentStatus;
-    private RoleDto role;
+    private List<RoleDto> roles;
 }
