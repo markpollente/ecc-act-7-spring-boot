@@ -27,7 +27,7 @@ public class HelpdeskTicketMapper {
                 ticketDto.getTicketNo(),
                 ticketDto.getTitle(),
                 ticketDto.getBody(),
-                EmployeeMapper.mapToEmployee(ticketDto.getAssignee()),
+                ticketDto.getAssignee() != null ? EmployeeMapper.mapToEmployee(ticketDto.getAssignee()) : null,
                 ticketDto.getStatus(),
                 null,
                 null,

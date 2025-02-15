@@ -5,12 +5,12 @@ import com.markp.exception.ResourceNotFoundException;
 import com.markp.mapper.HelpdeskTicketMapper;
 import com.markp.model.Employee;
 import com.markp.model.HelpdeskTicket;
+import com.markp.model.TicketStatus;
 import com.markp.repository.EmployeeRepository;
 import com.markp.repository.HelpdeskTicketRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -25,9 +25,8 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     @Override
     public HelpdeskTicketDto createTicket(HelpdeskTicketDto ticketDto) {
         HelpdeskTicket ticket = HelpdeskTicketMapper.mapToHelpdeskTicket(ticketDto);
-        ticket.setCreatedDate(LocalDateTime.now());
         ticket.setCreatedBy("system");
-        ticket.setStatus("draft");
+        ticket.setStatus(TicketStatus.DRAFT);
         ticket.setTicketNo(generateTicketNo());
         HelpdeskTicket savedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(savedTicket);
@@ -51,7 +50,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     public List<HelpdeskTicketDto> getTicketsByStatus(String status) {
-        List<HelpdeskTicket> tickets = ticketRepository.findByStatus(status);
+        List<HelpdeskTicket> tickets = ticketRepository.findByStatus(TicketStatus.valueOf(status.toUpperCase()));
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
                 .collect(Collectors.toList());
     }
@@ -72,7 +71,6 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
         ticket.setTitle(updatedTicket.getTitle());
         ticket.setBody(updatedTicket.getBody());
         ticket.setStatus(updatedTicket.getStatus());
-        ticket.setUpdatedDate(LocalDateTime.now());
         ticket.setUpdatedBy("system");
         ticket.setRemarks(updatedTicket.getRemarks());
 
@@ -98,8 +96,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exist with given id: " + employeeId));
         ticket.setAssignee(employee);
-        ticket.setStatus("filed");
-        ticket.setUpdatedDate(LocalDateTime.now());
+        ticket.setStatus(TicketStatus.FILED);
         ticket.setUpdatedBy("system");
         HelpdeskTicket updatedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicket);
@@ -111,8 +108,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exist with given id: " + ticketId));
         ticket.setRemarks(remarks);
-        ticket.setStatus(status);
-        ticket.setUpdatedDate(LocalDateTime.now());
+        ticket.setStatus(TicketStatus.valueOf(status.toUpperCase()));
         ticket.setUpdatedBy("system");
         HelpdeskTicket updatedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicket);
@@ -121,6 +117,6 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     private String generateTicketNo() {
         Random random = new Random();
         int number = random.nextInt(99999);
-        return "Ticket #" + String.format("%06d", number);
+        return "Ticket #" + String.format("%05d", number);
     }
 }

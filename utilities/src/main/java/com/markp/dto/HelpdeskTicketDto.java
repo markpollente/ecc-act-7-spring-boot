@@ -1,5 +1,6 @@
 package com.markp.dto;
 
+import com.markp.model.TicketStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class HelpdeskTicketDto {
     private String title;
     private String body;
     private EmployeeDto assignee;
-    private String status;
+    private TicketStatus status;
     private LocalDateTime createdDate;
     private String createdBy;
     private LocalDateTime updatedDate;
