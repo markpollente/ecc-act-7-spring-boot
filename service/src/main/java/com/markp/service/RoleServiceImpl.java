@@ -7,6 +7,7 @@ import com.markp.model.Role;
 import com.markp.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,14 +19,18 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
+    @Transactional
     public RoleDto createRole(RoleDto roleDto) {
-
+        if (roleDto.getName() == null || roleDto.getName().isEmpty()) {
+            throw new ResourceNotFoundException("Role name is required");
+        }
         Role role = RoleMapper.mapToRole(roleDto);
         Role savedRole = roleRepository.save(role);
         return RoleMapper.mapToRoleDto(savedRole);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RoleDto getRoleByID(Long roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() ->
@@ -34,6 +39,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoleDto> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         return roles.stream().map(RoleMapper::mapToRoleDto)
@@ -41,27 +47,27 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public RoleDto updateRole(Long roleId, RoleDto updatedRole) {
-
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Role does not exist with given id: " + roleId));
-
-        role.setName(updatedRole.getName());
-        role.setDescription(updatedRole.getDescription());
-
+        if (updatedRole.getName() != null) {
+            role.setName(updatedRole.getName());
+        }
+        if (updatedRole.getDescription() != null) {
+            role.setDescription(updatedRole.getDescription());
+        }
         Role updatedRoleObj = roleRepository.save(role);
-
         return RoleMapper.mapToRoleDto(updatedRoleObj);
     }
 
     @Override
+    @Transactional
     public void deleteRole(Long roleId) {
-
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Role does not exist with given id: " + roleId));
-
         roleRepository.deleteById(roleId);
     }
 }

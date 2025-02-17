@@ -10,7 +10,9 @@ import com.markp.repository.EmployeeRepository;
 import com.markp.repository.HelpdeskTicketRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -23,7 +25,14 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     private EmployeeRepository employeeRepository;
 
     @Override
+    @Transactional
     public HelpdeskTicketDto createTicket(HelpdeskTicketDto ticketDto) {
+        if (ticketDto.getTitle() == null || ticketDto.getTitle().isEmpty()) {
+            throw new ResourceNotFoundException("Title is required");
+        }
+        if (ticketDto.getBody() == null || ticketDto.getBody().isEmpty()) {
+            throw new ResourceNotFoundException("Body is required");
+        }
         HelpdeskTicket ticket = HelpdeskTicketMapper.mapToHelpdeskTicket(ticketDto);
         ticket.setCreatedBy("system");
         ticket.setStatus(TicketStatus.DRAFT);
@@ -33,6 +42,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HelpdeskTicketDto getTicketById(Long ticketId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -42,6 +52,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HelpdeskTicketDto> getAllTickets() {
         List<HelpdeskTicket> tickets = ticketRepository.findAll();
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
@@ -49,13 +60,21 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HelpdeskTicketDto> getTicketsByStatus(String status) {
-        List<HelpdeskTicket> tickets = ticketRepository.findByStatus(TicketStatus.valueOf(status.toUpperCase()));
+        List<HelpdeskTicket> tickets;
+        try {
+            tickets = ticketRepository.findByStatus(TicketStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new ResourceNotFoundException("Invalid status: '" + status + "'. Valid statuses are: " +
+                    Arrays.stream(TicketStatus.values()).map(Enum::name).collect(Collectors.joining(", ")), e);
+        }
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HelpdeskTicketDto> getTicketsByAssignee(Long assigneeId) {
         List<HelpdeskTicket> tickets = ticketRepository.findByAssigneeId(assigneeId);
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
@@ -63,22 +82,32 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional
     public HelpdeskTicketDto updateTicket(Long ticketId, HelpdeskTicketDto updatedTicket) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exist with given id: " + ticketId));
 
-        ticket.setTitle(updatedTicket.getTitle());
-        ticket.setBody(updatedTicket.getBody());
-        ticket.setStatus(updatedTicket.getStatus());
+        if (updatedTicket.getTitle() != null) {
+            ticket.setTitle(updatedTicket.getTitle());
+        }
+        if (updatedTicket.getBody() != null) {
+            ticket.setBody(updatedTicket.getBody());
+        }
+        if (updatedTicket.getStatus() != null) {
+            ticket.setStatus(updatedTicket.getStatus());
+        }
         ticket.setUpdatedBy("system");
-        ticket.setRemarks(updatedTicket.getRemarks());
+        if (updatedTicket.getRemarks() != null) {
+            ticket.setRemarks(updatedTicket.getRemarks());
+        }
 
         HelpdeskTicket updatedTicketObj = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicketObj);
     }
 
     @Override
+    @Transactional
     public void deleteTicket(Long ticketId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -88,6 +117,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional
     public HelpdeskTicketDto assignTicketToEmployee(Long ticketId, Long employeeId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -103,12 +133,18 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
     }
 
     @Override
+    @Transactional
     public HelpdeskTicketDto addRemarkAndUpdateStatus(Long ticketId, String remarks, String status) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exist with given id: " + ticketId));
         ticket.setRemarks(remarks);
-        ticket.setStatus(TicketStatus.valueOf(status.toUpperCase()));
+        try {
+            ticket.setStatus(TicketStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new ResourceNotFoundException("Invalid status: '" + status + "'. Valid statuses are: " +
+                    Arrays.stream(TicketStatus.values()).map(Enum::name).collect(Collectors.joining(", ")), e);
+        }
         ticket.setUpdatedBy("system");
         HelpdeskTicket updatedTicket = ticketRepository.save(ticket);
         return HelpdeskTicketMapper.mapToHelpdeskTicketDto(updatedTicket);
