@@ -40,7 +40,7 @@ public class HelpdeskTicketServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        employee = new Employee(1L, "Mark", "Pollente", "markp@hmm.com", 30L, "123 Antipolo St", "0951234678", "Active", null);
+        employee = new Employee(1L, "Mark", "Pollente", "markp@hmm.com", 30, "123 Antipolo St", "0951234678", "Active", null);
         ticket = new HelpdeskTicket(1L, "Ticket #000001", "Issue", "Description", employee, TicketStatus.FILED, null, "system", null, "system", "remark");
         ticketDto = new HelpdeskTicketDto(1L, "Ticket #000001", "Issue", "Description", null, TicketStatus.FILED, null, "system", null, "system", "remark");
     }

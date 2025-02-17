@@ -50,8 +50,8 @@ public class EmployeeServiceImplTest {
         MockitoAnnotations.openMocks(this);
         role = new Role(1L, "Admin", "Administrator role");
         roleDto = new RoleDto(1L, "Admin", "Administrator role");
-        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 30L, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(role)));
-        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 30L, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(roleDto)));
+        employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 30, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(role)));
+        employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 30, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(roleDto)));
     }
 
     @Test
