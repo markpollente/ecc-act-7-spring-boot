@@ -31,13 +31,13 @@ public class HelpdeskTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ticket_no", unique = true)
+    @Column(name = "ticket_no", nullable = false, unique = true, updatable = false)
     private String ticketNo;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "body")
+    @Column(name = "body", nullable = false)
     private String body;
 
     @ManyToOne
