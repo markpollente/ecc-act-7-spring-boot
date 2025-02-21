@@ -1,14 +1,16 @@
-package com.markp.service;
+package com.markp.impl;
 
 import com.markp.dto.HelpdeskTicketDto;
 import com.markp.exception.ResourceNotFoundException;
+import com.markp.logging.LogExecutionTime;
 import com.markp.mapper.HelpdeskTicketMapper;
 import com.markp.model.Employee;
 import com.markp.model.HelpdeskTicket;
 import com.markp.model.TicketStatus;
 import com.markp.repository.EmployeeRepository;
 import com.markp.repository.HelpdeskTicketRepository;
-import lombok.AllArgsConstructor;
+import com.markp.service.HelpdeskTicketService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +20,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
+    @Autowired
     private HelpdeskTicketRepository ticketRepository;
+
+    @Autowired
     private EmployeeRepository employeeRepository;
 
     @Override
     @Transactional
+    @LogExecutionTime
     public HelpdeskTicketDto createTicket(HelpdeskTicketDto ticketDto) {
         if (ticketDto.getTitle() == null || ticketDto.getTitle().isEmpty()) {
             throw new ResourceNotFoundException("Title is required");
@@ -43,6 +48,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional(readOnly = true)
+    @LogExecutionTime
     public HelpdeskTicketDto getTicketById(Long ticketId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -53,6 +59,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional(readOnly = true)
+    @LogExecutionTime
     public List<HelpdeskTicketDto> getAllTickets() {
         List<HelpdeskTicket> tickets = ticketRepository.findAll();
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
@@ -61,6 +68,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional(readOnly = true)
+    @LogExecutionTime
     public List<HelpdeskTicketDto> getTicketsByStatus(String status) {
         List<HelpdeskTicket> tickets;
         try {
@@ -75,6 +83,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional(readOnly = true)
+    @LogExecutionTime
     public List<HelpdeskTicketDto> getTicketsByAssignee(Long assigneeId) {
         List<HelpdeskTicket> tickets = ticketRepository.findByAssigneeId(assigneeId);
         return tickets.stream().map(HelpdeskTicketMapper::mapToHelpdeskTicketDto)
@@ -83,20 +92,14 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional
+    @LogExecutionTime
     public HelpdeskTicketDto updateTicket(Long ticketId, HelpdeskTicketDto updatedTicket) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exist with given id: " + ticketId));
-
-        if (updatedTicket.getTitle() != null) {
-            ticket.setTitle(updatedTicket.getTitle());
-        }
-        if (updatedTicket.getBody() != null) {
-            ticket.setBody(updatedTicket.getBody());
-        }
-        if (updatedTicket.getStatus() != null) {
-            ticket.setStatus(updatedTicket.getStatus());
-        }
+        ticket.setTitle(updatedTicket.getTitle());
+        ticket.setBody(updatedTicket.getBody());
+        ticket.setStatus(updatedTicket.getStatus());
         ticket.setUpdatedBy("system");
         if (updatedTicket.getRemarks() != null) {
             ticket.setRemarks(updatedTicket.getRemarks());
@@ -108,6 +111,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional
+    @LogExecutionTime
     public void deleteTicket(Long ticketId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -118,6 +122,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional
+    @LogExecutionTime
     public HelpdeskTicketDto assignTicketToEmployee(Long ticketId, Long employeeId) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->
@@ -134,6 +139,7 @@ public class HelpdeskTicketServiceImpl implements HelpdeskTicketService {
 
     @Override
     @Transactional
+    @LogExecutionTime
     public HelpdeskTicketDto addRemarkAndUpdateStatus(Long ticketId, String remarks, String status) {
         HelpdeskTicket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() ->

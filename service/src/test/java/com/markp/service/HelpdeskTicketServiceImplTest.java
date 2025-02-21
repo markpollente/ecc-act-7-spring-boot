@@ -2,7 +2,7 @@ package com.markp.service;
 
 import com.markp.dto.HelpdeskTicketDto;
 import com.markp.exception.ResourceNotFoundException;
-import com.markp.mapper.HelpdeskTicketMapper;
+import com.markp.impl.HelpdeskTicketServiceImpl;
 import com.markp.model.Employee;
 import com.markp.model.HelpdeskTicket;
 import com.markp.model.TicketStatus;
