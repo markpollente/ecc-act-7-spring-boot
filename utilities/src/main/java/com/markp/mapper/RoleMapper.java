@@ -17,7 +17,8 @@ public class RoleMapper {
         return new Role(
                 roleDto.getId(),
                 roleDto.getName(),
-                roleDto.getDescription()
+                roleDto.getDescription(),
+                null
         );
     }
 }

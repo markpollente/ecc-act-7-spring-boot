@@ -13,18 +13,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RoleServiceImplTest {
 
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private RoleServiceImpl roleService;
@@ -35,7 +44,7 @@ public class RoleServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        role = new Role(1L, "Admin", "Administrator role");
+        role = new Role(1L, "Admin", "Administrator role", null);
         roleDto = new RoleDto(1L, "Admin", "Administrator role");
     }
 
@@ -88,11 +97,15 @@ public class RoleServiceImplTest {
     @Test
     void deleteRole() {
         when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
+        Employee employee = new Employee();
+        employee.setRoles(new ArrayList<>(Arrays.asList(role)));
+        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee));
         doNothing().when(roleRepository).deleteById(1L);
 
         roleService.deleteRole(1L);
 
         verify(roleRepository, times(1)).findById(1L);
+        verify(employeeRepository, times(1)).findAll();
         verify(roleRepository, times(1)).deleteById(1L);
     }
 

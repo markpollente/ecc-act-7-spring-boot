@@ -21,9 +21,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EmployeeServiceImplTest {
 
@@ -47,7 +53,7 @@ public class EmployeeServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        role = new Role(1L, "Admin", "Administrator role");
+        role = new Role(1L, "Admin", "Administrator role", null);
         roleDto = new RoleDto(1L, "Admin", "Administrator role");
         employee = new Employee(1L, "First", "Last", "first.last@gmail.com", 30, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(role)));
         employeeDto = new EmployeeDto(1L, "First", "Last", "first.last@gmail.com", 30, "123 Antipolo St", "0951234678", "Active", new ArrayList<>(Arrays.asList(roleDto)));
